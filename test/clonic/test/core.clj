@@ -1,6 +1,7 @@
 (ns clonic.test.core
   (:use [clonic.core] :reload-all)
   (:use [clojure.test ])
+  (:use clojure.contrib.string)
   (:use clj-time.core))
 
 ;(run-tests 'clonic.test.core)
@@ -19,11 +20,13 @@
 
 
 (defmacro expect [ expectation date ]
-  `(deftest ~(symbol (str "test-" expectation))   (deq? ~date ~expectation))  )
+  `(deftest ~(symbol (str "test-"  (replace-str " " "-" expectation)))   (deq? ~date ~expectation))  )
 
 
 (expect "now" current )
 
 (expect  "tomorrow"   (plus current (days 1)))
+
+(expect "may 27"  (date-time 2010 5 27) )
 
 
