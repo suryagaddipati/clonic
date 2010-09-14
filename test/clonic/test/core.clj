@@ -9,6 +9,7 @@
 (defn date-eq? [date1 date2]
  (and  (= (day date1) (day date2)) 
        (= (month date1) (month date2)) 
+       (= (hour date1) (hour date2)) 
        (= (year date1) (year date2)) ))
 
 
@@ -16,7 +17,7 @@
 
 (def current (now))
 
-; (symbol (str "should-be-" expectation ))
+
 
 
 (defmacro expect [ expectation date ]
@@ -29,4 +30,7 @@
 
 (expect "may 27"  (date-time 2010 5 27) )
 
+(expect "may 28 5pm"  (date-time 2010 5 28 17) )
+
+(expect "may 28 5am"  (date-time 2010 5 28 5) )
 

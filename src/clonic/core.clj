@@ -16,6 +16,8 @@
  (defn to-int [str]
     (try (Integer/parseInt str) 
          (catch NumberFormatException nfe 0)))
+ (defn- to-hr [hr]
+   17)
 
 (defn parse-natural [x] 
   (case x
@@ -23,7 +25,12 @@
     "tomorrow" (plus (now) (days 1))))
 
 (defn- parse-month [start  more] 
- (date-time (year (now)) (month-idx start)  (to-int (first more)) ))
+  (let [year (year (now))
+        month (month-idx start) ] 
+  (cond 
+    (=  1 (count more))  (date-time  year month  (to-int (first more)))
+    (=  2 (count more))  (date-time  year month  (to-int (first more)) (to-hr (nth more 1))) 
+    )))
 
 (defn parse-date [x] 
  (let [ [start & more] (split  #"\s"  x )]
