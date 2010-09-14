@@ -1,6 +1,8 @@
 (ns clonic.core
    (:use clj-time.core)
-   (:use [clojure.contrib.string  :only (split)] ))
+   (:use [clojure.contrib.string  :only (split)] )
+    (:use [clojure.contrib.str-utils2  :only (contains?)] )
+   )
 
 (def months-of-year {  ["jan" "january" ] 1 ,  ["feb" "february"] 2 ,  ["mar" "march" ] 3, ["apr" "april"] 4, ["may"] 5, ["jun" "june"] 6,
               ["jul" "july"] 7, ["aug" "august"] 8, ["sep" "september"] 9, ["oct" "october"] 10, ["nov" "november"] 11, ["dec" "december"] 12})
@@ -17,7 +19,10 @@
     (try (Integer/parseInt str) 
          (catch NumberFormatException nfe 0)))
  (defn- to-hr [hr]
-   17)
+   (let [hour (to-int(first (split  #"[ap]"  hr ))) ]
+   (cond
+     (contains? hr "pm") (+ 12 hour)
+     :else hour)))
 
 (defn parse-natural [x] 
   (case x
