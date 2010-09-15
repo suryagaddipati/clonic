@@ -1,8 +1,9 @@
 (ns clonic.core
-   (:use clj-time.core)
-   (:use [clojure.contrib.string  :only (split)] )
-    (:use [clojure.contrib.str-utils2  :only (contains?)] )
-   )
+   (:use clj-time.core
+     clonic.scanner
+    [clojure.contrib.string  :only (split)] 
+    [clojure.contrib.str-utils2  :only (contains?)] 
+   ))
 
 (def months-of-year {  ["jan" "january" ] 1 ,  ["feb" "february"] 2 ,  ["mar" "march" ] 3, ["apr" "april"] 4, ["may"] 5, ["jun" "june"] 6,
               ["jul" "july"] 7, ["aug" "august"] 8, ["sep" "september"] 9, ["oct" "october"] 10, ["nov" "november"] 11, ["dec" "december"] 12})
@@ -43,3 +44,8 @@
     (nil? (month-idx start)) (parse-natural start)
     :else (parse-month start more)
     ))) 
+
+(defn parse-date1 [x] 
+ (let [ tokens (split  #"\s"  x )
+        reducer (partial merge-with str)]
+  (reduce reducer (map parse-units tokens)))) 
