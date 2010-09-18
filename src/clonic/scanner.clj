@@ -1,11 +1,14 @@
-(ns clonic.scanner)
+(ns clonic.scanner
+ (:use  [clojure.contrib.string  :only (split lower-case replace-re)] 
+        [clonic.normalizer :only (normalize)]
+        ))
 (def components  {
- :season {#"^springs?$"  :spring
+ :season     {#"^springs?$"  :spring
                #"^summers?$"  :summer
                #"^(autumn)|(fall)s?$"  :autumn
                #"^winters?$"  :winter}
 
- :month {#"^jan\.?(uary)?$" 1
+ :month      {#"^jan\.?(uary)?$" 1
                #"^feb\.?(ruary)?$" 2
                #"^mar\.?(ch)?$" 3
                #"^apr\.?(il)?$" 4
@@ -18,7 +21,7 @@
                #"^nov\.?(ember)?$" 11
                #"^dec\.?(ember)?$" 12}
 
- :day-of-week         {#"^m[ou]n(day)?$" :monday
+ :day-of-week  {#"^m[ou]n(day)?$" :monday
                #"^t(ue|eu|oo|u|)s(day)?$" :tuesday
                #"^tue$" :tuesday
                #"^we(dnes|nds|nns)day$" :wednesday
@@ -55,11 +58,19 @@
  (let [key-map  (get components key )
        match-key (first (filter #(not(nil?(re-find % s))) (keys key-map)))
        match-val (get key-map match-key)]
-   {key match-val}))
+   {key [match-val s] }))
  
-
-
 
 (defn parse-units [input]
   (let [ mapper (partial find-unit input)]
     (reduce merge (map mapper (keys components) ))))
+
+(defn token-result-merger [val1 val2]
+  (cond 
+      (nil? (first val1)) val2
+      :else val1))
+
+(defn parse-date [x] 
+ (let [ tokens (split  #"\s"  (normalize x) )
+        reducer (partial merge-with token-result-merger)]
+  (reduce reducer (map parse-units tokens)))) 
