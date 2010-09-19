@@ -30,10 +30,10 @@
                               [#"\b(?:in|during) the (morning)\b", "$1"]
                               [#"\b(?:in the|during the|at) (afternoon|evening|night)\b", "$1"]
                               [#"\b\d+:?\d*[ap]\b","$0m"]
-                              [#"(\d)([ap]m|oclock)\b", "$1 $2"]
+                            ;  [#"(\d)([ap]m|oclock)\b", "$1 $2"]
                               ]
         replaced-input  (reduce pattern-replacer replace-patterns)
          ] 
      
-   (reduce pattern-formatter (concat (list replaced-input)  format-patterns))
+   (reduce pattern-formatter (cons  replaced-input  format-patterns))
   ))

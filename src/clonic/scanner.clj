@@ -1,8 +1,24 @@
 (ns clonic.scanner
  (:use  [clojure.contrib.string  :only (split lower-case replace-re)] 
+      [clojure.contrib.seq  :only (find-first)] 
         [clonic.normalizer :only (normalize)]
+        [clonic.util :only (re-matches? chunkify)]
         ))
 (def components  {
+                  
+ :chronology {#"last"  :last
+               #"this" :this
+               #"next"  :next}                 
+  
+ :pointer { #"\bpast\b"   :past,
+                 #"\bfuture\b"  :future,
+                 #"\bin\b"  :future}                
+ 
+ :day-of-month  { #"^(\d*)(st|nd|rd|th)$" #(second (re-find #"^(\d*)(st|nd|rd|th)$" %))}     
+ 
+  :time     { #"(\d)([ap]m|oclock)\b" #(second (re-find #"(\d)([ap]m|oclock)\b" %))}
+                  
+                  
  :season     {#"^springs?$"  :spring
                #"^summers?$"  :summer
                #"^(autumn)|(fall)s?$"  :autumn
@@ -39,7 +55,7 @@
                #"^evenings?$" :evening
                #"^(night|nite)s?$" :night}
 
- :time     { #"^\d{12}(:?\d{2})?([\.:]?\d{2})?$" :time}
+
 
  :unit       {#"^years?$" :year
                #"^seasons?$" :season
@@ -54,23 +70,24 @@
                #"^seconds?$" :second}
 })
 
+
+
 (defn find-unit [s key]
  (let [key-map  (get components key )
-       match-key (first (filter #(not(nil?(re-find % s))) (keys key-map)))
+       match-key  (find-first #(re-matches? % s) (keys key-map))
        match-val (get key-map match-key)]
-   {key [match-val s] }))
+  (if (fn? match-val)
+     {key  (match-val  s)}
+     {key  match-val }
+     )))
  
 
 (defn parse-units [input]
   (let [ mapper (partial find-unit input)]
     (reduce merge (map mapper (keys components) ))))
 
-(defn token-result-merger [val1 val2]
-  (cond 
-      (nil? (first val1)) val2
-      :else val1))
 
-(defn parse-date [x] 
+(defn parse-toke [x] 
  (let [ tokens (split  #"\s"  (normalize x) )
-        reducer (partial merge-with token-result-merger)]
-  (reduce reducer (map parse-units tokens)))) 
+        reducer (partial merge-with str)]
+  (reduce reducer (map parse-units  tokens)))) 
