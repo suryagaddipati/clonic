@@ -28,9 +28,9 @@
 
 (expect  "tomorrow"   (plus current (days 1)))
 
-(expect "may 27"  (date-time 2010 5 27) )
+(expect "may 27"  (date-time 2012 5 27) )
 
-(expect "may 28 5pm"  (date-time 2010 5 28 17) )
+(expect "may 28 5pm"  (date-time 2012 5 28 17) )
 
-(expect "may 28 5am"  (date-time 2010 5 28 5) )
+(expect "may 28 5am"  (date-time 2012 5 28 5) )
 
