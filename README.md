@@ -14,17 +14,17 @@ Use
 ==========
 
 
-(parse-date "now" )
-;current 
+    (parse-date "now" )
+    ;current 
 
-(parse-date  "tomorrow") 
-;(plus current (days 1)))
+    (parse-date  "tomorrow") 
+    ;(plus current (days 1)))
 
-(parse-date "may 27") 
-;2012 5 27
+    (parse-date "may 27") 
+    ;2012 5 27
 
-(parse-date "may 28 5pm") 
-; 2012 5 28 17
+    (parse-date "may 28 5pm") 
+    ; 2012 5 28 17
 
-(parse-date "may 28 5am") 
-; 2012 5 28 5
+    (parse-date "may 28 5am") 
+    ; 2012 5 28 5
